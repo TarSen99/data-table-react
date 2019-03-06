@@ -143,7 +143,7 @@ class App extends Component {
   };
 
   handlePaginationSelector = (event) => {
-    const perPage = event.target.value;
+    const perPage = +event.target.value;
 
     this.setState({
       currentPage: 0,
