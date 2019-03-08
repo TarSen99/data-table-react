@@ -49,13 +49,10 @@ img {
   width: 100px;
 }
 
-.main__table-sortable {
-  color: #5B5E07;
-}
-
 .main__table-sortable:hover {
   cursor: pointer;
   color: red;
+  background-color: #FFFFE6;
 }
 
 .pagination__block {
@@ -130,6 +127,11 @@ img {
 .editable-block__button {
   position: absolute;
   top: 0;
-  right: -30px;
+  right: 0;
+  transform: translateX(110%);
   z-index: 3;
+}
+
+.editable-block__button:hover {
+  cursor: pointer;
 }

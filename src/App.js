@@ -184,18 +184,20 @@ class App extends Component {
       }
     });
 
-    const phones = [...this.state.phones];
-    newPhones.forEach(({ id, isChecked }) => {
-      const index = phones.findIndex(searchedPhone => searchedPhone.id === id);
+    this.setState(state => {
+      const phones = [...state.phones];
+      newPhones.forEach(({ id, isChecked }) => {
+        const index = phones.findIndex(searchedPhone => searchedPhone.id === id);
 
-      phones[index] = {
-        ...phones[index],
-        isChecked,
+        phones[index] = {
+          ...phones[index],
+          isChecked,
+        }
+      });
+
+      return {
+        phones,
       }
-    });
-
-    this.setState({
-      phones,
     });
   };
 
@@ -204,21 +206,52 @@ class App extends Component {
   }
 
   handleDoubleClick = (id, title) => {
-    const phones = [...this.state.phones];
-    const itemIndex = phones.findIndex( phone => phone.id === id);
+    this.setState(state => {
+      const phones = [...state.phones];
+      const itemIndex = phones.findIndex( phone => phone.id === id);
 
-    phones[itemIndex] = {
-      ...phones[itemIndex],
-      editableField: title,
-    };
+      phones[itemIndex] = {
+        ...phones[itemIndex],
+        editableField: title,
+      };
 
-    this.setState({
-      phones,
+      return {
+        phones,
+      }
     });
   };
 
-  handleEditableBlockButtonClick = (id, title) => {
-    console.log(id, title);
+  handleSubmitEditing = (id, title, value, wasEdit) => {
+    this.setState(state => {
+      const phones = [...state.phones];
+      const itemIndex = phones.findIndex( phone => phone.id === id);
+
+      phones[itemIndex] = {
+        ...phones[itemIndex],
+        [title]: wasEdit ? value : phones[itemIndex][title],
+        editableField: null,
+      };
+
+      return {
+        phones,
+      }
+    });
+  };
+
+  handleEditableBlockBlur = (id) => {
+    this.setState(state => {
+      const phones = [...state.phones];
+      const itemIndex = phones.findIndex( phone => phone.id === id);
+
+      phones[itemIndex] = {
+        ...phones[itemIndex],
+        editableField: null,
+      };
+
+      return {
+        phones,
+      }
+    });
   };
 
   render() {
@@ -243,7 +276,8 @@ class App extends Component {
           handleCheckAll={this.handleCheckAll}
           checkedAll={allChecked}
           handleDoubleClick={this.handleDoubleClick}
-          handleEditableBlockButtonClick={this.handleEditableBlockButtonClick}
+          handleSubmitEditing={this.handleSubmitEditing}
+          handleEditableBlockBlur={this.handleEditableBlockBlur}
         />
         <PaginationButtons
           totalPhonesCount={phones.length}

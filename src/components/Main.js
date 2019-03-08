@@ -15,7 +15,8 @@ const Main = ({
                 handlePaginationSelector,
                 perPage,
                 handleDoubleClick,
-                handleEditableBlockButtonClick
+                handleSubmitEditing,
+                handleEditableBlockBlur
 }) => (
   <main className="main">
     <div className="container">
@@ -33,14 +34,50 @@ const Main = ({
           phones={phones}
           togglePhoneCheckbox={togglePhoneCheckbox}
           handleDoubleClick={handleDoubleClick}
-          handleEditableBlockButtonClick={handleEditableBlockButtonClick}
+          handleSubmitEditing={handleSubmitEditing}
+          handleEditableBlockBlur={handleEditableBlockBlur}
         />
       </table>
     </div>
   </main>
 );
 
-Main.Content = ({ phones, config, togglePhoneCheckbox,  handleDoubleClick, handleEditableBlockButtonClick}) => {
+Main.Header = ({checkedAll, handlePaginationSelector, config, handleOrderClick, perPage, handleCheckAll}) => (
+  <thead>
+  <tr>
+    <th>
+      <input
+        type="checkbox"
+        onChange={handleCheckAll}
+        checked={checkedAll}
+      />
+      <PaginationSelector
+        handlePaginationSelector={handlePaginationSelector}
+        perPage={perPage}
+      />
+    </th>
+    {
+      Object.entries(config).map(([key, value]) => {
+        const sortableTitleClassName = classNames({
+          'main__table-sortable': value['isSortable']
+        });
+
+        return (
+          <th
+            key={key}
+            className={sortableTitleClassName}
+            onClick={value['isSortable'] ? () => handleOrderClick(key) : null }
+          >
+            {value['title']}
+          </th>
+        );
+      })
+    }
+  </tr>
+  </thead>
+);
+
+Main.Content = ({ phones, config, togglePhoneCheckbox,  handleDoubleClick, handleSubmitEditing, handleEditableBlockBlur}) => {
   return (
     <tbody>
       {
@@ -55,43 +92,25 @@ Main.Content = ({ phones, config, togglePhoneCheckbox,  handleDoubleClick, handl
                 />
               </th>
               {Object.keys(config).map(title => {
-                const editableBlock = (
-                  <div>
-                    <textarea
-                      className="editable-block__text"
-                      defaultValue={phone[title]}
+                const editableBlock =
+                  (
+                    <Main.EditableBlock
+                      handleEditableBlockBlur={handleEditableBlockBlur}
+                      handleSubmitEditing={handleSubmitEditing}
+                      title={title}
+                      phone={phone}
                     />
-                    <button
-                      className="editable-block__button"
-                      onClick={() => handleEditableBlockButtonClick(phone.id, title)}
-                    >
-                      OK
-                    </button>
-                  </div>
                 );
 
                 return (
-                  <td
+                  <Main.Cell
                     key={title}
-                    onDoubleClick={config[title]['isEditable']
-                      ? () => handleDoubleClick(phone.id, title) : null}
-                    className={
-                      classNames({
-                        'editable-block': config[title]['isEditable']
-                      })
-                    }
-                  >
-                    {
-                      (phone.editableField === title &&
-                        editableBlock) ||
-                      (config[title]['hasImage']
-                        ? <img
-                          src={`${IMAGE_BASE}${phone[title]}`}
-                          alt={title}
-                        />
-                        : phone[title])
-                    }
-                  </td>
+                    config={config}
+                    title={title}
+                    handleDoubleClick={handleDoubleClick}
+                    phone={phone}
+                    editableBlock={editableBlock}
+                  />
                 )
               })}
             </tr>
@@ -102,39 +121,63 @@ Main.Content = ({ phones, config, togglePhoneCheckbox,  handleDoubleClick, handl
   );
 };
 
-Main.Header = ({checkedAll, handlePaginationSelector, config, handleOrderClick, perPage, handleCheckAll}) => (
-  <thead>
-    <tr>
-      <th>
-        <input
-          type="checkbox"
-          onChange={handleCheckAll}
-          checked={checkedAll}
-        />
-        <PaginationSelector
-          handlePaginationSelector={handlePaginationSelector}
-          perPage={perPage}
-        />
-      </th>
-      {
-        Object.entries(config).map(([key, value]) => {
-          const sortableTitleClassName = classNames({
-            'main__table-sortable': value['isSortable']
-          });
+Main.EditableBlock = ({
+                        handleEditableBlockBlur,
+                        phone,
+                        handleSubmitEditing,
+                        title
+}) => {
+  let editableFormValue = phone[title];
+  let wasEdit = false;
 
-          return (
-            <th
-              key={key}
-              className={sortableTitleClassName}
-              onClick={value['isSortable'] ? () => handleOrderClick(key) : null }
-            >
-              {value['title']}
-            </th>
-          );
-        })
-      }
-    </tr>
-  </thead>
+  const onFieldChange = (event) => {
+    editableFormValue = event.target.value;
+    wasEdit = true;
+  };
+
+  return (
+    <div>
+      <textarea
+        className="editable-block__text"
+        defaultValue={editableFormValue}
+        onChange={onFieldChange}
+        onBlur={() => handleEditableBlockBlur(phone.id)}
+        autoFocus
+        onKeyDown={(e) => e.keyCode === 13 ?
+          handleSubmitEditing(phone.id, title, editableFormValue, wasEdit) : null}
+      />
+      <button
+        className="editable-block__button button"
+        onMouseDown={() => handleSubmitEditing(phone.id, title, editableFormValue, wasEdit)}
+      >
+        OK
+      </button>
+    </div>
+  )
+};
+
+Main.Cell = ({ config, title, handleDoubleClick, phone, editableBlock }) => (
+  <td
+    key={title}
+    onDoubleClick={config[title]['isEditable']
+      ? () => handleDoubleClick(phone.id, title) : null}
+    className={
+      classNames({
+        'editable-block': config[title]['isEditable']
+      })
+    }
+  >
+    {
+      (phone.editableField === title &&
+        editableBlock) ||
+      (config[title]['hasImage']
+        ? <img
+          src={`${IMAGE_BASE}${phone[title]}`}
+          alt={title}
+        />
+        : phone[title])
+    }
+  </td>
 );
 
 export default Main;
