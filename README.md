@@ -1,1 +1,0 @@
-# [preview](https://tarsen99.github.io/data-table-react/build/)
