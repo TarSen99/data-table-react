@@ -20,6 +20,8 @@ const Main = () => (
   </main>
 );
 
+const PaginationSelectorWithTableContext = WithTableContext(PaginationSelector);
+
 Main.Header = (props) => {
   const {handleCheckAll, checkedAll, config, handleOrderClick} = props;
 
@@ -32,7 +34,7 @@ Main.Header = (props) => {
             onChange={handleCheckAll}
             checked={checkedAll}
           />
-          <PaginationSelector />
+          <PaginationSelectorWithTableContext />
         </th>
         {
           Object.entries(config).map(([key, value]) => {
