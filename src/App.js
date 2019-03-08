@@ -15,6 +15,7 @@ class App extends Component {
     currentPage: 0,
     perPage: 3,
     showSelected: false,
+    isLoading: true,
   };
 
   componentDidMount() {
@@ -26,6 +27,7 @@ class App extends Component {
 
         this.setState({
           phones: dataWithEditableField,
+          isLoading: false,
         })
       });
   }
@@ -286,13 +288,20 @@ class App extends Component {
             handleSelectedButtonClick={this.handleSelectedButtonClick}
             showSelectedButtonIsActive={this.state.showSelected}
           />
-          <Main />
-          <PaginationButtons
-            totalPhonesCount={phones.length}
-            currentPage={this.state.currentPage}
-            perPage={this.state.perPage}
-            handleClick={this.selectPage}
-          />
+          {
+            this.state.isLoading ? (
+              <div className="container">Loading...</div>
+              )
+              : <>
+                  <Main />
+                  <PaginationButtons
+                    totalPhonesCount={phones.length}
+                    currentPage={this.state.currentPage}
+                    perPage={this.state.perPage}
+                    handleClick={this.selectPage}
+                  />
+              </>
+          }
         </React.Fragment>
       </TableContext.Provider>
     );
