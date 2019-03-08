@@ -3,6 +3,7 @@ import Header from './components/Header';
 import Main from './components/Main';
 import PaginationButtons from './components/PaginationButtons';
 import columnConfig from './components/config';
+import TableContext from './components/TableContext';
 import './App.css';
 
 class App extends Component {
@@ -259,33 +260,37 @@ class App extends Component {
     const currentPagePhones = this.getCurrentPagePhones(phones);
     const allChecked = this.checkAllButtonsSelection(currentPagePhones);
 
+    const settings = {
+      perPage: this.state.perPage,
+      handlePaginationSelector: this.handlePaginationSelector,
+      config: columnConfig,
+      phones: currentPagePhones,
+      togglePhoneCheckbox: this.togglePhoneCheckbox,
+      handleOrderClick: this.onOrderInput,
+      handleCheckAll: this.handleCheckAll,
+      checkedAll: allChecked,
+      handleDoubleClick: this.handleDoubleClick,
+      handleSubmitEditing: this.handleSubmitEditing,
+      handleEditableBlockBlur: this.handleEditableBlockBlur,
+    };
+
     return (
-      <React.Fragment>
-        <Header
-          onFilterInput={this.onFilterInput}
-          handleSelectedButtonClick={this.handleSelectedButtonClick}
-          showSelectedButtonIsActive={this.state.showSelected}
-        />
-        <Main
-          perPage={this.state.perPage}
-          handlePaginationSelector={this.handlePaginationSelector}
-          config={columnConfig}
-          phones={currentPagePhones}
-          togglePhoneCheckbox={this.togglePhoneCheckbox}
-          handleOrderClick={this.onOrderInput}
-          handleCheckAll={this.handleCheckAll}
-          checkedAll={allChecked}
-          handleDoubleClick={this.handleDoubleClick}
-          handleSubmitEditing={this.handleSubmitEditing}
-          handleEditableBlockBlur={this.handleEditableBlockBlur}
-        />
-        <PaginationButtons
-          totalPhonesCount={phones.length}
-          currentPage={this.state.currentPage}
-          perPage={this.state.perPage}
-          handleClick={this.selectPage}
-        />
-      </React.Fragment>
+      <TableContext.Provider value={settings}>
+        <React.Fragment>
+          <Header
+            onFilterInput={this.onFilterInput}
+            handleSelectedButtonClick={this.handleSelectedButtonClick}
+            showSelectedButtonIsActive={this.state.showSelected}
+          />
+          <Main />
+          <PaginationButtons
+            totalPhonesCount={phones.length}
+            currentPage={this.state.currentPage}
+            perPage={this.state.perPage}
+            handleClick={this.selectPage}
+          />
+        </React.Fragment>
+      </TableContext.Provider>
     );
   }
 }
