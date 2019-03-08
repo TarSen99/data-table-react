@@ -20,18 +20,31 @@ class App extends Component {
     fetch('https://mate-academy.github.io/phone-catalogue-static/phones/phones.json')
       .then(response => response.json())
       .then(data => {
-        const dataWithCheckbox = data.map(item => (
-          {
-            ...item,
-            isChecked: false,
-          }
-        ));
+        const dataWithCheckbox = this.addIsCheckedProperty(data);
+        const dataWithEditableField = this.addCurrentEditableField(dataWithCheckbox);
 
         this.setState({
-          phones: dataWithCheckbox,
-          filteredPhones: dataWithCheckbox,
+          phones: dataWithEditableField,
         })
       });
+  }
+
+  addIsCheckedProperty(items) {
+    return items.map(item => (
+      {
+        ...item,
+        isChecked: false,
+      }
+    ));
+  }
+
+  addCurrentEditableField(items) {
+    return items.map(item => (
+      {
+        ...item,
+        editableField: null,
+      }
+    ));
   }
 
   togglePhoneCheckbox = (id) => {
@@ -190,6 +203,24 @@ class App extends Component {
     return phones.every(phone => phone.isChecked === true);
   }
 
+  handleDoubleClick = (id, title) => {
+    const phones = [...this.state.phones];
+    const itemIndex = phones.findIndex( phone => phone.id === id);
+
+    phones[itemIndex] = {
+      ...phones[itemIndex],
+      editableField: title,
+    };
+
+    this.setState({
+      phones,
+    });
+  };
+
+  handleEditableBlockButtonClick = (id, title) => {
+    console.log(id, title);
+  };
+
   render() {
     const phones = this.getFilteredPhones();
     const currentPagePhones = this.getCurrentPagePhones(phones);
@@ -211,6 +242,8 @@ class App extends Component {
           handleOrderClick={this.onOrderInput}
           handleCheckAll={this.handleCheckAll}
           checkedAll={allChecked}
+          handleDoubleClick={this.handleDoubleClick}
+          handleEditableBlockButtonClick={this.handleEditableBlockButtonClick}
         />
         <PaginationButtons
           totalPhonesCount={phones.length}

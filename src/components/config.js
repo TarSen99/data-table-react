@@ -3,17 +3,18 @@ const columnConfig = {
     hasImage: true,
   },
   name: {
-    title: 'Name', // в таблице колонка будет так называться
-    isSortable: true, // Поиск будет проверять эту и последнюю колонки
+    title: 'Name',
+    isSortable: true,
     isSearchable: true,
   },
-  snippet: { // Только для тех ключей которые есть в columnConfig будут колонки в таблице
+  snippet: {
     title: 'Description',
-    isSearchable: true, // В этой колонке тоже будет происходить поиск query
+    isSearchable: true,
+    isEditable: true,
   },
   age: {
     title: 'Age',
-    isSortable: true, // по этой колонке можно сортировать
+    isSortable: true,
   },
 };
 

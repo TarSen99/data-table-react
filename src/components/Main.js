@@ -13,7 +13,9 @@ const Main = ({
                 togglePhoneCheckbox,
                 config,
                 handlePaginationSelector,
-                perPage
+                perPage,
+                handleDoubleClick,
+                handleEditableBlockButtonClick
 }) => (
   <main className="main">
     <div className="container">
@@ -30,33 +32,68 @@ const Main = ({
           config={config}
           phones={phones}
           togglePhoneCheckbox={togglePhoneCheckbox}
+          handleDoubleClick={handleDoubleClick}
+          handleEditableBlockButtonClick={handleEditableBlockButtonClick}
         />
       </table>
     </div>
   </main>
 );
 
-Main.Content = (props) => {
+Main.Content = ({ phones, config, togglePhoneCheckbox,  handleDoubleClick, handleEditableBlockButtonClick}) => {
   return (
     <tbody>
       {
-        props.phones.map(phone => {
+        phones.map(phone => {
           return (
             <tr key={phone.id}>
               <th>
                 <input
                   type="checkbox"
                   checked={phone.isChecked}
-                  onChange={() => props.togglePhoneCheckbox(phone.id)}
+                  onChange={() => togglePhoneCheckbox(phone.id)}
                 />
               </th>
-              {Object.keys(props.config).map(title => (
-                <td key={title}>
-                  {props.config[title]['hasImage']
-                    ? <img src={`${IMAGE_BASE}${phone[title]}`} alt="" />
-                    : phone[title]}
-                </td>
-              ))}
+              {Object.keys(config).map(title => {
+                const editableBlock = (
+                  <div>
+                    <textarea
+                      className="editable-block__text"
+                      defaultValue={phone[title]}
+                    />
+                    <button
+                      className="editable-block__button"
+                      onClick={() => handleEditableBlockButtonClick(phone.id, title)}
+                    >
+                      OK
+                    </button>
+                  </div>
+                );
+
+                return (
+                  <td
+                    key={title}
+                    onDoubleClick={config[title]['isEditable']
+                      ? () => handleDoubleClick(phone.id, title) : null}
+                    className={
+                      classNames({
+                        'editable-block': config[title]['isEditable']
+                      })
+                    }
+                  >
+                    {
+                      (phone.editableField === title &&
+                        editableBlock) ||
+                      (config[title]['hasImage']
+                        ? <img
+                          src={`${IMAGE_BASE}${phone[title]}`}
+                          alt={title}
+                        />
+                        : phone[title])
+                    }
+                  </td>
+                )
+              })}
             </tr>
           );
         })
