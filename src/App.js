@@ -255,16 +255,12 @@ class App extends Component {
     });
   };
 
-  render() {
-    const phones = this.getFilteredPhones();
-    const currentPagePhones = this.getCurrentPagePhones(phones);
-    const allChecked = this.checkAllButtonsSelection(currentPagePhones);
-
-    const settings = {
+  getSettings(phones, allChecked) {
+    return {
       perPage: this.state.perPage,
       handlePaginationSelector: this.handlePaginationSelector,
       config: columnConfig,
-      phones: currentPagePhones,
+      phones: phones,
       togglePhoneCheckbox: this.togglePhoneCheckbox,
       handleOrderClick: this.onOrderInput,
       handleCheckAll: this.handleCheckAll,
@@ -273,6 +269,14 @@ class App extends Component {
       handleSubmitEditing: this.handleSubmitEditing,
       handleEditableBlockBlur: this.handleEditableBlockBlur,
     };
+  }
+
+  render() {
+    const phones = this.getFilteredPhones();
+    const currentPagePhones = this.getCurrentPagePhones(phones);
+    const allChecked = this.checkAllButtonsSelection(currentPagePhones);
+
+    const settings = this.getSettings(currentPagePhones, allChecked);
 
     return (
       <TableContext.Provider value={settings}>
