@@ -1,11 +1,12 @@
 import React from 'react';
 import classNames from 'classnames';
+import PropTypes from 'prop-types';
 
 import TableContext from './TableContext';
 import WithContext from './WithContext';
 import PaginationSelector from "./PaginationSelector";
 
-const WithTableContext = WithContext.bind(this, TableContext);
+const WithTableContext = WithContext.bind(null, TableContext);
 
 const IMAGE_BASE = 'https://raw.githubusercontent.com/TarSen99/DataTableComponent/master/';
 
@@ -58,6 +59,22 @@ Main.Header = (props) => {
   );
 };
 
+Main.Header.propTypes = {
+  handleCheckAll: PropTypes.func.isRequired,
+  checkedAll: PropTypes.bool.isRequired,
+  handleOrderClick: PropTypes.func.isRequired,
+
+  config: PropTypes.objectOf(
+    PropTypes.shape({
+      title: PropTypes.string,
+      isSortable: PropTypes.bool,
+      isSearchable: PropTypes.bool,
+      hasImage: PropTypes.bool,
+      isEditable: PropTypes.bool,
+    })
+  ).isRequired,
+};
+
 Main.Content = (props) => {
   const {phones, togglePhoneCheckbox, config } = props;
 
@@ -100,6 +117,21 @@ Main.Content = (props) => {
   );
 };
 
+Main.Content.propTypes = {
+  phones: PropTypes.array,
+  togglePhoneCheckbox: PropTypes.func.isRequired,
+
+  config: PropTypes.objectOf(
+    PropTypes.shape({
+      title: PropTypes.string,
+      isSortable: PropTypes.bool,
+      isSearchable: PropTypes.bool,
+      hasImage: PropTypes.bool,
+      isEditable: PropTypes.bool,
+    })
+  ),
+};
+
 Main.EditableBlock = (props) => {
   const {handleEditableBlockBlur, handleSubmitEditing, phone, title} = props;
 
@@ -132,6 +164,21 @@ Main.EditableBlock = (props) => {
   );
 };
 
+Main.EditableBlock.propTypes = {
+  handleEditableBlockBlur: PropTypes.func.isRequired,
+  handleSubmitEditing: PropTypes.func.isRequired,
+  title: PropTypes.string,
+  phone: PropTypes.shape({
+    age: PropTypes.number,
+    editableField: PropTypes.string,
+    id: PropTypes.string,
+    imageUrl: PropTypes.string,
+    isChecked: PropTypes.bool,
+    name: PropTypes.string,
+    snippet: PropTypes.string,
+  }).isRequired,
+};
+
 Main.Cell = (props) => {
   const {config, handleDoubleClick, title, phone, editableBlock} = props;
   const className = classNames({
@@ -160,6 +207,34 @@ Main.Cell = (props) => {
     </td>
   );
 };
+
+Main.Cell.propTypes = {
+  handleDoubleClick: PropTypes.func.isRequired,
+  handleSubmitEditing: PropTypes.func.isRequired,
+  title: PropTypes.string,
+  editableBlock: PropTypes.element,
+
+  config: PropTypes.objectOf(
+    PropTypes.shape({
+      title: PropTypes.string,
+      isSortable: PropTypes.bool,
+      isSearchable: PropTypes.bool,
+      hasImage: PropTypes.bool,
+      isEditable: PropTypes.bool,
+    })
+  ).isRequired,
+
+  phone: PropTypes.shape({
+    age: PropTypes.number,
+    editableField: PropTypes.string,
+    id: PropTypes.string,
+    imageUrl: PropTypes.string,
+    isChecked: PropTypes.bool,
+    name: PropTypes.string,
+    snippet: PropTypes.string,
+  }).isRequired,
+};
+
 
 const MainHeaderWithTableContext = WithTableContext(Main.Header);
 const MainContentWithTableContext = WithTableContext(Main.Content);

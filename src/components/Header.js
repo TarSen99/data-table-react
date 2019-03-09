@@ -1,4 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+
 import Filter from './Filter';
 import CheckedItemsButtons from './CheckedItemsButtons';
 
@@ -20,5 +22,11 @@ const Header = ({onFilterInput, handleSelectedButtonClick, showSelectedButtonIsA
       </div>
     </header>
 );
+
+Header.propTypes = {
+  onFilterInput: PropTypes.func.isRequired,
+  handleSelectedButtonClick: PropTypes.func.isRequired,
+  showSelectedButtonIsActive: PropTypes.bool.isRequired,
+};
 
 export default Header;

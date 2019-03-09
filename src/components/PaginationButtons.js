@@ -1,5 +1,6 @@
 import React from 'react';
 import classNames from 'classnames';
+import PropTypes from "prop-types";
 
 const PaginationButtons = ({totalPhonesCount, currentPage, perPage, handleClick}) => {
   const generateButtons = (count) => {
@@ -87,6 +88,13 @@ const PaginationButtons = ({totalPhonesCount, currentPage, perPage, handleClick}
       </div>
     </div>
   );
+};
+
+PaginationButtons.propTypes = {
+  totalPhonesCount: PropTypes.number.isRequired,
+  currentPage: PropTypes.number.isRequired,
+  perPage: PropTypes.number.isRequired,
+  handleClick: PropTypes.func.isRequired,
 };
 
 export default PaginationButtons;

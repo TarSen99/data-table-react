@@ -1,4 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+
 
 const PaginationSelector = (props) => {
   const {handlePaginationSelector, perPage} = props;
@@ -17,6 +19,11 @@ const PaginationSelector = (props) => {
       </select>
     </div>
   )
+};
+
+PaginationSelector.propTypes = {
+  handlePaginationSelector: PropTypes.func.isRequired,
+  perPage: PropTypes.number.isRequired,
 };
 
 export default PaginationSelector;
